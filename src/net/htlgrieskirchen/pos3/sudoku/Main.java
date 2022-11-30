@@ -16,6 +16,7 @@ public class Main {
         System.out.println(">----------------");
         System.out.println("SOLVED    = " + ss.checkSudoku(output));
         System.out.println(">----------------");
+        System.out.println("Benchmark: " + ss.benchmark(input) + " ms");
     }
 
     private static void printSudoku(int[][] sudoku){

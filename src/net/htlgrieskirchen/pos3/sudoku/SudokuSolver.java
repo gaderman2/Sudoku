@@ -51,23 +51,27 @@ public class SudokuSolver implements ISodukoSolver {
     @Override
     public boolean checkSudoku(int[][] rawSudoku) {
         List<Integer> numberList = new ArrayList<>();
-        for (int i = 0; i < rawSudoku.length; i++)
-            for (int j : rawSudoku[i]) numberList.add(j);
+        for (int[] ints : rawSudoku) {
+            for (int j : ints) numberList.add(j);
 
-        for (int i = 1; i < 10; i++) if (!numberList.contains(i)) return false;
+            for (int k = 1; k < 10; k++) if (!numberList.contains(k)) return false;
+            numberList.clear();
+        }
 
-        numberList.clear();
-        for (int j = 0; j < rawSudoku.length; j++)
-            for (int i = 0; i < rawSudoku.length; i++) numberList.add(rawSudoku[i][j]);
+        //numberList.clear();
+        for (int j = 0; j < rawSudoku.length; j++) {
+            for (int[] ints : rawSudoku) numberList.add(ints[j]);
 
-        for (int i = 1; i < 10; i++) if (!numberList.contains(i)) return false;
+            for (int i = 1; i < 10; i++) if (!numberList.contains(i)) return false;
+            numberList.clear();
+        }
 
-        numberList.clear();
+        //numberList.clear();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
 
                 for (int k = i * 3; k < 3 + 3 * i; k++) {
-                    for (int l = i * 3; l < 3 + 3 * j; l++) {
+                    for (int l = j * 3; l < 3 + 3 * j; l++) {
                         numberList.add(rawSudoku[k][l]);
                     }
                 }
@@ -123,7 +127,7 @@ public class SudokuSolver implements ISodukoSolver {
                     }
                     if (number != 0){
                         rawSudoku[i][j] = number;
-                        System.out.println(i + " | " + j + " -> " + number);
+                        //System.out.println(i + " | " + j + " -> " + number);
                     }
                 }
 
@@ -151,13 +155,26 @@ public class SudokuSolver implements ISodukoSolver {
         for (int i = 0; i < rawSudoku.length; i++)
             if (rawSudoku[i][y] == number) return true;
 
-        for (int i = x / 3; i < 3 + (x / 3) * 3; i++)
-            for (int j = y / 3; j < 3 + (y / 3) * 3; j++) {
+        for (int i = x / 3 * 3; i < 3 + (x / 3) * 3; i++)
+            for (int j = y / 3 * 3; j < 3 + (y / 3) * 3; j++) {
                 //System.out.println( i + " | " + j);
                 if (rawSudoku[i][j] == number) return true;
             }
 
         return false;
+    }
+
+    public long benchmark(int[][] rawSudoku){
+        long startTime = System.currentTimeMillis();
+
+        for(int i = 0; i < 10; i++){
+            int[][] input = readSudoku(new File("1_sudoku_level1.csv"));
+
+            int[][] output = solveSudoku(input);
+            checkSudoku(output);
+        }
+
+        return System.currentTimeMillis() - startTime;
     }
 
     @Override
